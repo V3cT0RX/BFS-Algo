@@ -6,6 +6,7 @@
 
 typedef struct node {
 	int data;
+	int pred;
 	struct node *next;
 } Node;
 
@@ -47,23 +48,27 @@ void push(Queue *q, int d) {
 
 void printbfs(int adj[LIM][LIM], int n, int s) {
 	int visited[LIM]={0,}, v, i;
+	int dist[LIM]={0,};
 	Queue *q = initQueue();
 	
 	push(q, s);
-	printf("%d ", s+1);
+	dist[s]=0;
+	printf("{%d(d:0)}", s+1);
 	visited[s]=1;
 
 	while(!isEmpty(q)) {
 		v = pop(q);
 		for(i=0;i<n;i++) {
 			if(adj[v][i] != 0 && !visited[i]) {
-				printf("%d ", i+1);
 				visited[i]=1;
 				push(q,i);
+				q->rear->pred = v;
+				dist[i]=dist[v]+1;
+				printf("->{%d(d:%d)}", i+1,dist[i]);
 			}
 		}
 	}
-	printf("\n");
+	printf("\n\nNode format: {<vertex>(d:<distance>)}\n");
 }
 
 int main(int argc, char **argv) {
@@ -96,7 +101,10 @@ int main(int argc, char **argv) {
 	printf("Enter source: ");
 	scanf("%d", &v);
 
+	printf("\nBFS Traversal:\n");
+	printf("+------------------------------------------+\n");
 	printbfs(adj, n, v-1);
+	printf("+------------------------------------------+\n");
 
 	return 0;
 }
